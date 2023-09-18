@@ -529,7 +529,7 @@ function checkTexture2D (info, mipData, limits) {
         'min filter requires mipmap')
     }
   } else {
-    if (!limits.npotMipmap) {
+    if (!limits.webgl2Compat) {
       // texture must be power of 2
       check(isPow2(w) && isPow2(h),
         'texture must be a square power of 2 to support mipmapping')
@@ -543,8 +543,10 @@ function checkTexture2D (info, mipData, limits) {
       check(info.minFilter === GL_NEAREST && info.magFilter === GL_NEAREST,
         'filter not supported, must enable oes_texture_float_linear')
     }
-    check(!info.genMipmaps,
-      'mipmap generation not supported with float textures')
+    if (!limits.webgl2Compat) {
+      check(!info.genMipmaps,
+          'mipmap generation not supported with float textures')
+    }
   }
 
   // check image complete
@@ -1266,8 +1268,6 @@ var wrapLimits = function (gl, extensions) {
     npotTextureCube = !gl.getError()
   }
 
-  var webgl2Compat = gl['___regl_gl_version___'] === 2;
-
   return {
     // drawing buffer bit depth
     colorBits: [
@@ -1316,8 +1316,7 @@ var wrapLimits = function (gl, extensions) {
     // quirks
     readFloat: readFloat,
     npotTextureCube: npotTextureCube,
-    webgl2Compat,
-    npotMipmap: webgl2Compat,
+    webgl2Compat: gl['___regl_gl_version___'] === 2,
   }
 }
 

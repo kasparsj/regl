@@ -593,8 +593,6 @@ var wrapLimits = function (gl, extensions) {
     npotTextureCube = !gl.getError()
   }
 
-  var webgl2Compat = gl['___regl_gl_version___'] === 2;
-
   return {
     // drawing buffer bit depth
     colorBits: [
@@ -643,8 +641,7 @@ var wrapLimits = function (gl, extensions) {
     // quirks
     readFloat: readFloat,
     npotTextureCube: npotTextureCube,
-    webgl2Compat,
-    npotMipmap: webgl2Compat,
+    webgl2Compat: gl['___regl_gl_version___'] === 2,
   }
 }
 
